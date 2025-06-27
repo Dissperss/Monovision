@@ -1,25 +1,26 @@
 const gulp = require('gulp');
 const connect = require('gulp-connect');
 
-// Запуск сервера с автообновлением
-gulp.task('serve', () => {
+// 1. Запускаем сервер + livereload
+gulp.task('server', function () {
     connect.server({
-        root: 'src', // Рабочая папка (где лежат HTML/CSS)
-        port: 3000,
-        livereload: true
+        root: 'src',       // папка с проектом
+        port: 3000,        // порт сервера
+        livereload: true,  // включаем автообновление
     });
 });
 
-// Следим за изменениями файлов
-gulp.task('watch', () => {
+// 2. Следим за файлами
+gulp.task('watch', function () {
     gulp.watch(['src/**/*.html', 'src/**/*.css'], gulp.series('reload'));
 });
 
-// Перезагружаем страницу
-gulp.task('reload', (done) => {
-    connect.reload();
+// 3. Перезагружаем страницу
+gulp.task('reload', function (done) {
+    gulp.src('src/**/*')  // берём все файлы
+        .pipe(connect.reload());  // отправляем сигнал на перезагрузку
     done();
 });
 
-// Задача по умолчанию
-gulp.task('default', gulp.parallel('serve', 'watch'));
+// 4. Запускаем всё вместе
+gulp.task('default', gulp.parallel('server', 'watch'));
